@@ -1,80 +1,98 @@
 // src/components/ContactForm.tsx
-import React, { useState, useEffect } from "react";
-import { Contact } from "../types/Contact";
+import React, { useState, useEffect } from 'react';
+import { Contact } from '../types/Contact';
+import { Form, Button } from 'react-bootstrap';
 
 interface ContactFormProps {
-  initialContact?: Contact;
-  onSave: (contact: Contact) => void;
+    initialContact?: Contact | any;
+    onSave: (contact: Contact) => void;
 }
 
 const ContactForm = ({ initialContact, onSave }: ContactFormProps) => {
-  const [contact, setContact] = useState<Contact>({
-    firstName: "",
-    lastName: "",
-    mobile: "",
-    email: "",
-  });
-
-  useEffect(() => {
-    if (initialContact) {
-      setContact(initialContact);
-    }
-  }, [initialContact]);
-
-  const handleChange = (e:any) => {
-    const { name, value } = e.target;
-    setContact({
-      ...contact,
-      [name]: value,
+    const [contact, setContact] = useState<Contact>({
+        firstName: '',
+        lastName: '',
+        mobile: '',
+        email: '',
+        message: '',
     });
-  };
 
-  const handleSubmit = (e:any) => {
-    e.preventDefault();
-    onSave(contact);
-  };
+    useEffect(() => {
+        if (initialContact) {
+            setContact(initialContact);
+        }
+    }, [initialContact]);
 
-  return (
-    <form className="form" onSubmit={handleSubmit}>
-      <div className="formGroup">
-        <label>First Name:</label>
-        <input
-          type="text"
-          name="firstName"
-          value={contact.firstName}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="formGroup">
-        <label>Last Name:</label>
-        <input
-          type="text"
-          name="lastName"
-          value={contact.lastName}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="formGroup">
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={contact.email}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="formGroup">
-        <label>mobile:</label>
-        <input
-          type="tel"
-          name="mobile"
-          value={contact.mobile}
-          onChange={handleChange}
-        />
-      </div>
-      <button type="submit">Save</button>
-    </form>
-  );
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setContact(prevContact => ({
+            ...prevContact,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onSave(contact);
+    };
+
+    return (
+        <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formFirstName">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                    type="text"
+                    placeholder="Enter your First Name"
+                    name="firstName"
+                    value={contact.firstName}
+                    onChange={handleChange}
+                />
+            </Form.Group>
+            <Form.Group controlId="formLastName">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control
+                    type="text"
+                    placeholder="Enter your Last Name"
+                    name="lastName"
+                    value={contact.lastName}
+                    onChange={handleChange}
+                />
+            </Form.Group>
+            <Form.Group controlId="formEmail">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                    type="email"
+                    placeholder="Enter your email"
+                    name="email"
+                    value={contact.email}
+                    onChange={handleChange}
+                />
+            </Form.Group>
+            <Form.Group controlId="formMobile">
+                <Form.Label>Phone</Form.Label>
+                <Form.Control
+                    placeholder="Enter your Mobile Number"
+                    name="mobile"
+                    value={contact.mobile}
+                    onChange={handleChange}
+                />
+            </Form.Group>
+            <Form.Group controlId="formMessage">
+                <Form.Label>Message</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    rows={3}
+                    placeholder="Enter your message"
+                    name="message"
+                    value={contact.message}
+                    onChange={handleChange}
+                />
+            </Form.Group>
+            <Button variant="primary" className='btn-custom-primary float-end mt-3' type="submit">
+                Save
+            </Button>
+        </Form>
+    );
 };
 
 export default ContactForm;

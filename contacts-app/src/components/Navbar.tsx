@@ -1,21 +1,40 @@
-// src/components/Navbar.tsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import Hamburger from './Hamburger';
+import Logo from './Logo';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
+  const [showNavbar, setShowNavbar] = React.useState(false);
+
+  const handleShowNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
+
   return (
     <nav className="navbar">
-      <ul className="navLinks">
-        <li className="navLink">
-          <Link to="/">Home</Link>
-        </li>
-        <li className="navLink">
-          <Link to="/about">About</Link>
-        </li>
-        <li className="navLink">
-          <Link to="/contact">Contact</Link>
-        </li>
-      </ul>
+      <div className="container-fluid">
+        <div className="logo">
+          <Logo />
+        </div>
+        <div className="menu-icon" onClick={handleShowNavbar}>
+          <Hamburger />
+        </div>
+        <div className={`nav-elements ${showNavbar && "active"}`}>
+          <ul>
+            <li>
+              <NavLink to="/">Home</NavLink>
+            </li>
+            <li>
+              <NavLink to="/about">About</NavLink>
+            </li>
+            <li className="has-submenu">
+              <NavLink to="/contact">
+                Contact
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+      </div>
     </nav>
   );
 };

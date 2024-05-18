@@ -1,16 +1,15 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "components/Navbar";
 import AppRoutes from "routes/Routes";
-import "assets/styles.css";
+import "assets/style/styles.css";
+import Breadcrumbs from "components/Breadcrumb";
 function App() {
   return (
-    <Router>
       <>
         <Navbar />
+        <Breadcrumbs />
         <AppRoutes />
       </>
-    </Router>
   );
 }
 

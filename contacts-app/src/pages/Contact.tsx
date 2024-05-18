@@ -1,44 +1,81 @@
-// src/pages/Contact.tsx
-import React, { useState } from 'react';
-import CreateContact from '../components/CreateContact';
-import UpdateContact from '../components/UpdateContact';
+// src/pages/ContactPage.tsx
+
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Button, Badge } from 'react-bootstrap';
+import ContactList from '../components/ContactList';
 import { Contact } from '../types/Contact';
+import { fetchContacts, deleteContact } from 'services/contact';
+import { useNavigate } from 'react-router-dom';
 
 const ContactPage = () => {
-  const [contact, setContacts] = useState<Contact|null>(null);
-  const [currentContact, setCurrentContact] = useState<Contact | null>(null);
+    const navigate = useNavigate();
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const handleCreate = (contact: Contact) => {
-    setContacts(contact);
+  useEffect(() => {
+    // Fetch contacts when the component mounts
+    fetchAllContacts();
+  }, []);
+
+  const fetchAllContacts = async () => {
+    try {
+      const fetchedContacts = await fetchContacts();
+      setContacts(fetchedContacts);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+      // Handle error
+    }
   };
 
-  const handleUpdate = (updatedContact: Contact) => {
-    setContacts(
-      contact
-      // contacts.map((contact) => (contact.id === updatedContact.id ? updatedContact : contact))
-    );
+  const handleDeleteContact = async (id: string | number | undefined) => {
+    try {
+      // Delete the contact with the specified ID
+      await deleteContact(id);
+      // Fetch updated list of contacts after deletion
+      fetchAllContacts();
+    } catch (error) {
+      console.error(`Error deleting contact with ID ${id}:`, error);
+    }
   };
+
+  const handleEditContact = async (id: string | number | undefined) => {
+    try {
+        navigate(`/contact/${id}`);
+    } catch (error) {
+      console.error(`Error edit contact with ID ${id}:`, error);
+    }
+  }
+
+  const handleAddContact = async () => {
+    try {
+        navigate('/contact/add');
+    } catch (error) {
+      console.error(`Error add contact page`, error);
+    }
+  }
 
   return (
-    <div className="page">
-      <h2>Contact</h2>
-{/*       
-
-      <h2>Contact Management</h2>
-      <CreateContact onCreate={handleCreate} />
-      {currentContact && (
-        <UpdateContact contact={currentContact} onUpdate={handleUpdate} />
-      )}
-      <h3>Contacts List</h3>
-      <ul>
-        {contacts.map((contact) => (
-          <li key={contact.id}>
-            {contact.name} - {contact.email} - {contact.phone}
-            <button onClick={() => setCurrentContact(contact)}>Edit</button>
-          </li>
-        ))}
-      </ul> */}
-    </div>
+    <Container>
+      <Row className="justify-content-md-center mt-3">
+        <Col md={8}>
+        <Row className='mb-2'>
+        <Col xs={12} md={8} className='align-items-lg-start d-flex'>
+        <span className='mb-3 header-title me-2'>Contact List</span>{ contacts.length > 0 && <span> <Badge bg="primary" className='badge-custom'>{contacts.length}</Badge> </span>}
+        </Col>
+        <Col xs={6} md={4} className='text-end'>
+        <Button variant="primary" className='btn-custom-primary' onClick={handleAddContact}>Add Contact</Button>
+        </Col>
+      </Row>
+          {loading ? (
+            <p>Loading contacts...</p>
+          ) : (
+            <ContactList contacts={contacts} onDelete={handleDeleteContact} onEdit={handleEditContact} />
+          )}
+         
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

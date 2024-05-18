@@ -1,12 +1,5 @@
 import React from 'react';
 
-const About = () => {
-  return (
-    <div>
-      <h2>About</h2>
-      <p>About Arunakar!</p>
-    </div>
-  );
-};
+const About = () => <h2>You are in the About</h2>;
 
 export default About;
